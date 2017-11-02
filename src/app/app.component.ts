@@ -2,12 +2,16 @@ import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import * as moment from 'moment';
 
+const EIGHT_HOURS:number = 28800000;
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+
+  
 
   formTasks: any[] = [];
   tasks: any[] = [];
@@ -39,7 +43,8 @@ export class AppComponent {
       start: '',
       end: '',
       desc: '',
-      opt: ''
+      comp: "",
+      opt: false
     });
   }
 
@@ -61,17 +66,19 @@ export class AppComponent {
 
   createNewTask(){
     this.formTasks = [];
-    this.formTasks.push({
-      date: moment().format("DD/MM/YYYY"),
-      start: '',
-      end: '',
-      desc: '',
-      opt: ''
-    });
+    this.add(null);
   }
 
 
   getHours(start: string, end: string): number{
     return moment.duration(moment(end, "HH:mm").diff(moment(start, "HH:mm"))).asMilliseconds();
+  }
+
+  getTotal(): string {
+    var sum: number = 0;
+    this.tasks.filter(t => !t.opt).map(t => {
+      sum = sum + t.hours;
+    })
+    return moment.utc(sum).format('HH:mm');;
   }
 }

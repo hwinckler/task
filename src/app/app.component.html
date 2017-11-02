@@ -1,13 +1,24 @@
 <form (ngSubmit)="save(f)" #f="ngForm">
-    <div *ngFor="let t of tasks; let i= index">
-        <input [(ngModel)]="t.date" name="date_{{i}}" />
-        <input [(ngModel)]="t.start" name="start_{{i}}" />
-        <input [(ngModel)]="t.end" name="end_{{i}}" />
-        <input [(ngModel)]="t.desc" name="desc_{{i}}" />
-        <input [(ngModel)]="t.opt" name="opt_{{i}}" />
-        <input type="button" name="btn_{{i}}" value="-" (click)="del($event, i)"  [hidden]="i == 0"/>
+<div>
+<p><a href="">Novembro</a></p>
+<p><a href="">Hoje</a></p>
+</div>
+<div>
+    <div *ngFor="let ft of formTasks; let i= index">
+        <input [(ngModel)]="ft.date" name="date_{{i}}" />
+        <input [(ngModel)]="ft.start" name="start_{{i}}" />
+        <input [(ngModel)]="ft.end" name="end_{{i}}" />
+        <input [(ngModel)]="ft.desc" name="desc_{{i}}" />
+        <input [(ngModel)]="ft.opt" name="opt_{{i}}" />
         <input type="button" (click)="add($event)" value="+" />
+        <input type="button" name="btn_{{i}}" value="-" (click)="rem($event, i)"  [hidden]="i == 0"/>
     </div>
-    
     <input type="submit" value="save" />
+</div>
+<div>
+<p *ngFor="let t of tasks; let i= index">
+        <input type="button" name="btn_{{i}}" value="-" (click)="del($event, i)"/> | 
+        {{t.date}} - {{t.start}}
+</p>
+</div>
 </form>

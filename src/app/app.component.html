@@ -17,11 +17,13 @@
     <input type="submit" value="save" />
 </div>
 <div>
-<p *ngFor="let t of tasks; let i= index">
+<br>
+<div *ngFor="let t of tasks; let i= index">
         <input type="button" name="btn_{{i}}" value="-" (click)="del($event, i)"/>
          | 
         {{t.date}} - {{t.start}} - {{t.end}} - {{t.desc}} - {{t.compl}}
-</p>
+        <br>
+</div>
 <p>
     ---------------
     <br>

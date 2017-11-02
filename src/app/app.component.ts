@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-root',
@@ -34,7 +35,7 @@ export class AppComponent {
   add(e: Event){
     //console.log(e);
     this.formTasks.push({
-      date: '12/12/2012',
+      date: moment().format("DD/MM/YYYY"),
       start: '',
       end: '',
       desc: '',
@@ -50,7 +51,7 @@ export class AppComponent {
     //});
 
     this.formTasks.map(ft => {
-      ft.hours = 4;
+      ft.hours = this.getHours(ft.start, ft.end);
       this.tasks.push(ft);
     });
 
@@ -61,11 +62,16 @@ export class AppComponent {
   createNewTask(){
     this.formTasks = [];
     this.formTasks.push({
-      date: '12/12/2012',
+      date: moment().format("DD/MM/YYYY"),
       start: '',
       end: '',
       desc: '',
       opt: ''
     });
+  }
+
+
+  getHours(start: string, end: string): number{
+    return moment.duration(moment(end, "HH:mm").diff(moment(start, "HH:mm"))).asMilliseconds();
   }
 }

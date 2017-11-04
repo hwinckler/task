@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Optional } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import * as moment from 'moment';
 import { TaskService } from './services/task.service';
@@ -13,13 +13,17 @@ export class AppComponent {
   formTasks: any[] = [];
   tasks: any[] = [];
 
-  constructor(private taskService: TaskService){
+  constructor(private taskService: TaskService, @Optional() public month: number){
     this.createNewTask();
     this.getAll();
   }
 
+  getMonth(): number{
+    return (this.month == null) ? parseInt(moment().format("MM")) : this.month;
+  }
+
   getAll(){
-    this.taskService.getAll().then(t =>{
+    this.taskService.getAll(this.getMonth()).then(t =>{
       this.tasks = t;
     }); 
   }
@@ -52,11 +56,17 @@ export class AppComponent {
     this.formTasks.map(ft => {
       ft.hours = this.getHours(ft.start, ft.end);
       ft.date = new Date(moment(ft.date, 'DD/MM/YYYY').format());
+      ft.order = this.formatOrder(ft.start);
     });
     this.taskService.insert(this.formTasks).then(t => {
       this.getAll();
       this.createNewTask();
     });
+  }
+
+  formatOrder(start){
+    var parts = start.split(":");
+    return parseInt(parts[0] + '' + parts[1]);
   }
 
   createNewTask(){

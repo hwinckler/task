@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import * as moment from 'moment';
-
-const EIGHT_HOURS:number = 28800000;
+import { TaskService } from './services/task.service';
 
 @Component({
   selector: 'app-root',
@@ -11,33 +10,34 @@ const EIGHT_HOURS:number = 28800000;
 })
 export class AppComponent {
 
-  
-
   formTasks: any[] = [];
   tasks: any[] = [];
 
-  constructor(){
+  constructor(private taskService: TaskService){
     this.createNewTask();
+    this.getAll();
   }
 
-  rem(e: Event, index: any){
-    //console.log(e);
-    //console.log(t);
-    //let index = this.tasks.indexOf(t);
-    //console.log(index);
+  getAll(){
+    this.taskService.getAll().then(t =>{
+      this.tasks = t;
+    }); 
+  }
+
+  rem(index: any){
     this.formTasks.splice(index, 1);
   }
 
-  del(e: Event, index: any){
-    //console.log(e);
-    //console.log(t);
-    //let index = this.tasks.indexOf(t);
-    //console.log(index);
-    this.tasks.splice(index, 1);
+  del(task: any){
+    this.taskService.delete(task).then(() =>{
+      var index = this.tasks.indexOf(task);
+      if(index >= 0){
+        this.tasks.splice(index, 1);
+      }
+    })
   }  
 
-  add(e: Event){
-    //console.log(e);
+  add(){
     this.formTasks.push({
       date: moment().format("DD/MM/YYYY"),
       start: '',
@@ -49,24 +49,19 @@ export class AppComponent {
   }
 
   save(f: NgForm){
-    //console.log(f.form.controls);
-    //Object.keys(f.form.controls).forEach(key => {
-      //console.log(f.form.get(key).value());
-      //console.log(f.form.get(key).value);
-    //});
-
     this.formTasks.map(ft => {
       ft.hours = this.getHours(ft.start, ft.end);
-      this.tasks.push(ft);
+      ft.date = new Date(moment(ft.date, 'DD/MM/YYYY').format());
     });
-
-    console.log(this.tasks);
-    this.createNewTask();
+    this.taskService.insert(this.formTasks).then(t => {
+      this.getAll();
+      this.createNewTask();
+    });
   }
 
   createNewTask(){
     this.formTasks = [];
-    this.add(null);
+    this.add();
   }
 
 
@@ -80,5 +75,9 @@ export class AppComponent {
       sum = sum + t.hours;
     })
     return moment.utc(sum).format('HH:mm');;
+  }
+
+  formatDate(d:any):string{
+    return moment(d).format('DD/MM/YYYY');
   }
 }

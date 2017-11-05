@@ -1,0 +1,33 @@
+<form (ngSubmit)="save(f)" #f="ngForm">
+  <div>
+  <p><a href="">Novembro</a></p>
+  <p><a href="">Hoje</a></p>
+  </div>
+  <div>
+      <div *ngFor="let ft of formTasks; let i= index">
+          <input [(ngModel)]="ft.date" name="date_{{i}}" size="6" maxlength="10"/>
+          <input [(ngModel)]="ft.start" name="start_{{i}}" size="3" maxlength="5" />
+          <input [(ngModel)]="ft.end" name="end_{{i}}" size="3" maxlength="5" />
+          <input [(ngModel)]="ft.desc" name="desc_{{i}}" />
+          <input [(ngModel)]="ft.compl" name="compl_{{i}}" size="6" />
+          <input type="checkbox" [(ngModel)]="ft.opt" name="chk_{{i}}" />
+          <input type="button" (click)="add($event)" value="+" />
+          <input type="button" name="btn_{{i}}" value="-" (click)="rem($event, i)"  [hidden]="i == 0"/>
+      </div>
+      <input type="submit" value="save" />
+  </div>
+  <div>
+  <br>
+  <div *ngFor="let t of tasks; let i= index">
+          <input type="button" name="btn_{{i}}" value="-" (click)="del(t)"/>
+           | 
+          {{formatDate(t.date)}} - {{t.start}} - {{t.end}} - {{t.desc}} - {{t.compl}}
+          <br>
+  </div>
+  <p>
+      ---------------
+      <br>
+      Total: {{getTotal()}}
+  </p>
+  </div>
+  </form>

@@ -10,11 +10,10 @@ export class TaskService {
     private _provider: StitchService
   ) { }
 
-  public getAll(month: number): Promise<any[]> {
-    console.log(month);
+  public getAll(m: number, y: number): Promise<any[]> {
     return this._provider.authenticate().then(() =>{
         return this._provider.getDB().collection(COLLECTION).aggregate(
-          [{$addFields:{month:{$month:"$date"}}},{$match:{month:11}},{$sort:{date:1,order:1}}]
+          [{$addFields:{month:{$month:"$date"}}},{$match:{month:m}},{$sort:{date:1,order:1}}]
         ).then(r => {
             return r.map(e => {
               return e;

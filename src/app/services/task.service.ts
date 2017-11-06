@@ -30,7 +30,7 @@ export class TaskService {
   }
   public delete(task: any): Promise<Boolean> {
     return this._provider.authenticate().then(() =>{
-        return this._provider.getDB().collection(COLLECTION).deleteOne(task).then(r => {
+        return this._provider.getDB().collection(COLLECTION).deleteOne({_id: task}).then(r => {
           return r.deletedCount;
         })
     })

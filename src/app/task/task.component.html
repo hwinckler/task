@@ -12,7 +12,7 @@
           <input [(ngModel)]="ft.compl" name="compl_{{i}}" size="6" />
           <input type="checkbox" [(ngModel)]="ft.opt" name="chk_{{i}}" />
           <input type="button" (click)="add($event)" value="+" />
-          <input type="button" name="btn_{{i}}" value="-" (click)="rem($event, i)"  [hidden]="i == 0"/>
+          <input type="button" name="btn_{{i}}" value="-" (click)="rem(i)"  [hidden]="i == 0"/>
       </div>
       <input type="submit" value="save" />
   </div>

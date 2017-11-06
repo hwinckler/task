@@ -18,15 +18,15 @@ export class TaskComponent {
 
   constructor(private taskService: TaskService, public route: ActivatedRoute, public router: Router){
     this.route.params.subscribe(params => {
-      this.year = parseInt(params['year']);
-      this.month = parseInt(params['month']);
 
-      if(this.year == null && this.month == null){
+      if(params['year'] == null && params['month'] == null){
         this.year = parseInt(moment().format('YYYY'));
         this.month = parseInt(moment().format('MM'));
         this.router.navigate([`/task/years/${this.year}/months/${this.month}`]);
       }
       else{
+        this.year = parseInt(params['year']);
+        this.month = parseInt(params['month']);
         this.createNewTask();
         this.getAll();
       }
@@ -44,7 +44,7 @@ export class TaskComponent {
   }
 
   del(task: any){
-    this.taskService.delete(task).then(() =>{
+    this.taskService.delete(task._id).then(() =>{
       var index = this.tasks.indexOf(task);
       if(index >= 0){
         this.tasks.splice(index, 1);

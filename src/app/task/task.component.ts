@@ -23,6 +23,7 @@ export class TaskComponent {
   workingHours: number = 0;
   hoursLeft: number = 0;
   hoursFormatted: string = '';
+  hoursPositiveNegativeFormatted: string = '';
 
 
   constructor(private taskService: TaskService, public route: ActivatedRoute, public router: Router){
@@ -46,11 +47,20 @@ export class TaskComponent {
     this.taskService.getAll(this.month, this.year).then(t =>{
       this.tasks = t;
     }).then(() => {
+      var months: string[] = [];
       var sum: number = 0;
       this.tasks.filter(t => !t.opt).map(t => {
         sum = sum + t.hours;
-      })
+        var day: string = moment(t.date).format('DD');
+        if(months.indexOf(day) < 0){
+          months.push(day);
+        }
+      });
+
+      var hoursExpectedUntilNow: number = (months.length * HOURS_DAY) * 3600000;
       this.workingHours = (sum / 3600000);
+      var hoursPositive: number = (sum - hoursExpectedUntilNow)  / 3600000;
+      this.hoursPositiveNegativeFormatted =  this.formata(hoursPositive);
       this.hoursLeft = ((((this.hoursMonth) * 3600000) - sum) / 3600000);
       this.hoursFormatted = this.formata(this.workingHours) + ' (remaining: ' + this.formata(this.hoursLeft) + ' / ' + this.formata(this.hoursMonth) + ')';
 
@@ -58,7 +68,7 @@ export class TaskComponent {
   }
 
   formata(value){
-    return moment.duration(value, "hours").format("h:mm");
+    return moment.duration(value, "hours").format("HH:mm");
   }
 
   rem(index: any){
@@ -107,25 +117,9 @@ export class TaskComponent {
     this.add();
   }
 
-
   getHours(start: string, end: string): number{
     return moment.duration(moment(end, "HH:mm").diff(moment(start, "HH:mm"))).asMilliseconds();
   }
-
-  getTotal(): string {
-    //var sum: number = 0;
-   // this.tasks.filter(t => !t.opt).map(t => {
-      //sum = sum + t.hours;
-    //})
-    //var total = ((((this.workingDays * HOURS_DAY) * 60 * 60 * 1000) - sum) / 3600000);
-    //this.formata((((this.workingDays * HOURS_DAY) * 60 * 60 * 1000) - sum));
-
-    //console.log(moment.duration((sum / 3600000) , "minutes").format());
-
-    //return (sum / 3600000) + ' (' + total + ' / ' + (this.workingDays * HOURS_DAY) + ')';
-    return '';
-  }
-
 
   formatDate(d:any):string{
     return moment(d).format('DD/MM/YYYY');
